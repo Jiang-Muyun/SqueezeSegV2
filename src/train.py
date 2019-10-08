@@ -115,7 +115,6 @@ def train():
     sess.run(init)
     # saver.restore(sess, './log/train/model.ckpt-1500')
 
-
     summary_writer = tf.summary.FileWriter(FLAGS.train_dir, sess.graph)
 
     coord = tf.train.Coordinator()
@@ -204,9 +203,12 @@ def train():
         if step % FLAGS.checkpoint_step == 0 or step == FLAGS.max_steps-1:
           checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
-    except Exception, e:
+
+    except Exception as e:
+      print ('------------ exception')
       coord.request_stop(e)
     finally:
+      print ('------------ finally')
       coord.request_stop()
       sess.run(model.q.close(cancel_pending_enqueues=True))
       coord.join(enq_threads)
